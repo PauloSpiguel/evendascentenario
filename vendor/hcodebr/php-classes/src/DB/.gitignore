@@ -1,0 +1,3 @@
+#Ignora arquivos da pasta.
+
+[^.]*
