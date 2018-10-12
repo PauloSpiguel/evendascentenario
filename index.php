@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once "vendor/autoload.php";
-require_once "vendor/hcodebr/php-classes/src/DB/SecretAdmin.php";
+//require_once "vendor/hcodebr/php-classes/src/DB/SecretAdmin.php";
 //Tras as dependencias do sistema
 
 use \Hcode\Model\User; //namespaces de usuarios
@@ -183,12 +183,12 @@ $app->post("/admin/forgot", function () {
     exit;
 
 });
-
+################## CARREGA PÁGINA DE RECUPERA SENHA ########################
 $app->get("/admin/forgot/sent", function () {
 
     $page = new PageAdmin([
         "header" => false,
-        "footer" => false,
+        "footer" => false
     ]);
 
     $page->setTpl("forgot-sent");

@@ -9,6 +9,7 @@ use \Hcode\Model;
 class User extends Model
 {
     const SESSION = "User";
+    const SECRET = "Hcodephp7_Secret";
 
     public static function login($login, $password)
     {
@@ -172,22 +173,22 @@ class User extends Model
 
             } else {
 
-                $dataRecovery = $resultsRecovery[0];
+                $dataRecovery = $resultsRecovery[0];              
 
                 $iv     = random_bytes(openssl_cipher_iv_length('aes-256-cbc'));
-                $code   = openssl_encrypt($dataRecovery['idrecovery'], 'aes-256-cbc', SECRET, 0, $iv);
+                $code   = openssl_encrypt($dataRecovery['idrecovery'], 'aes-256-cbc', User::SECRET, 0, $iv);
                 $result = base64_encode($iv . $code);
-                if ($inadmin === true) {
+                //if ($inadmin === true) {
                     $link = "http://www.evendascentenario.newtechtecnologia.com/admin/forgot/reset?code=$result";
-                } else {
-                    $link = "http://www.evendascentenario.newtechtecnologia.com/forgot/reset?code=$result";
-                }
-                $mailer = new Mailer($data['desemail'], $data['desperson'], "Redefinir senha da Hcode Store", "forgot", array(
+                //} else {
+                    //$link = "http://www.evendascentenario.newtechtecnologia.com/forgot/reset?code=$result";
+                //}
+                $mailer = new Mailer($data['desemail'], $data['desperson'], utf8_decode("Redefinir senha da Hcode Store"), "forgot", array(
                     "name" => $data['desperson'],
                     "link" => $link,
                 ));
                 $mailer->send();
-                return $link;
+                return $data;
 
             }
         }
