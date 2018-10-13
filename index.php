@@ -183,7 +183,7 @@ $app->post("/admin/forgot", function () {
     exit;
 
 });
-################## CARREGA PÁGINA DE RECUPERA SENHA ########################
+################## CARREGA PÁGINA DE ENVIO DE RECUPERA SENHA EMAIL ########################
 $app->get("/admin/forgot/sent", function () {
 
     $page = new PageAdmin([
@@ -192,6 +192,48 @@ $app->get("/admin/forgot/sent", function () {
     ]);
 
     $page->setTpl("forgot-sent");
+
+});
+################## CARREGA PÁGINA PARA RESETAR SENHA ########################
+$app->get("/admin/forgot/reset", function () {
+
+    $user = User::validForgotDecrypt($_GET["code"]);//Metodo para decriptografar o código
+
+    $page = new PageAdmin([
+        "header" => false,
+        "footer" => false
+    ]);
+
+    $page->setTpl("forgot-reset", array(
+        "name"=>$user["desperson"],//passa a variavel desperson para o templete
+        "code"=>$_GET["code"]//passa a variavel code para o templete
+    ));
+
+});
+################## ROTA PARA TROCAR SENHA E CARREGAR MSM DE SUCESSO NA TELA ########################
+$app->post("/admin/forgot/reset", function(){
+
+    $forgot = User::validForgotDecrypt($_POST['code']);
+
+    User::setForgotUser($forgot["idrecovery"]);//metodo para 
+
+    $user = new User();
+
+    $user->get((int)$forgot["iduser"]);//pega o id do usuário 
+
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT, [
+
+        "cost"=>12//nivel de processamento de segurança
+    ]);
+
+    $user->setPassword($password);//metodo para atualizar o senha no banco
+
+    $page = new PageAdmin([
+        "header" => false,
+        "footer" => false
+    ]);
+
+    $page->setTpl("forgot-reset-success"); 
 
 });
 
