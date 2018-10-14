@@ -8,6 +8,7 @@ use \Hcode\Model\User; //namespaces de usuarios
 use \Hcode\Page; //namespaces Página
 use \Hcode\PageAdmin; //namespaces Admin
 use \Slim\Slim;
+use \Hcode\Model\Category;
 
 $app = new Slim(); //rotas
 
@@ -234,6 +235,54 @@ $app->post("/admin/forgot/reset", function(){
     ]);
 
     $page->setTpl("forgot-reset-success"); 
+
+});
+################## ROTA LISTAR CATEGORIAS ########################
+$app->get("/admin/categories", function(){
+
+    $categories = Category::listAll();
+
+    $page = new PageAdmin();
+
+    $page->setTpl("categories", [
+        'categories' => $categories //Envia para o templete categorias
+    ]);
+
+});
+################## ROTA CREATE CATEGORIAS ########################
+$app->get("/admin/categories/create", function(){
+
+    $page = new PageAdmin();
+
+    $page->setTpl("categories-create");
+
+});
+################## PASSA DADOS CREATE CATEGORIAS ########################
+$app->post("/admin/categories/create", function(){
+
+    $category = new Category();
+
+    $category->setData($_POST);//Adiciona os valores de formulario no objeto
+
+    $category->save();
+
+    header("Location: /admin/categories");
+
+    exit;
+
+});
+################## ROTA DELETE CATEGORIAS ########################
+$app->get("/admin/categories/:idcategory/delete", function($idcategory){
+
+    $category = new Category(); //Nova instancia de classe
+
+    $category->get((int)$idcategory); //Carrega objeto verificando se ainda existe no banco de dados
+
+    $category->delete();
+
+    header("Location: /admin/categories");
+
+    exit();
 
 });
 
