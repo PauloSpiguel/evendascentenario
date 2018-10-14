@@ -151,7 +151,7 @@ class User extends Model
                 INNER JOIN tb_users b USING(idperson)
                 WHERE a.desemail = :email",
                 array(
-                    ":email" => $email,
+                    ":email" => $email
                 ));
 
             if (count($results) === 0) {
@@ -211,10 +211,11 @@ class User extends Model
              AND
              a.dtrecovery IS NULL
              AND
-             DATE_ADD(a.dtregister, INTERVAL 1 HOUR) >= NOW();
-             ", array(
+             DATE_ADD(a.dtregister, INTERVAL 1 HOUR) >= NOW();",
+             array(
                 ":idrecovery"=> $idrecovery
             ));
+         
          if (count($results) === 0)
          {
              throw new \Exception("Não foi possível recuperar a senha.");
