@@ -240,6 +240,8 @@ $app->post("/admin/forgot/reset", function(){
 ################## ROTA LISTAR CATEGORIAS ########################
 $app->get("/admin/categories", function(){
 
+    User::verifyLogin();
+
     $categories = Category::listAll();
 
     $page = new PageAdmin();
@@ -252,6 +254,8 @@ $app->get("/admin/categories", function(){
 ################## ROTA CREATE CATEGORIAS ########################
 $app->get("/admin/categories/create", function(){
 
+    User::verifyLogin();
+
     $page = new PageAdmin();
 
     $page->setTpl("categories-create");
@@ -259,6 +263,8 @@ $app->get("/admin/categories/create", function(){
 });
 ################## PASSA DADOS CREATE CATEGORIAS ########################
 $app->post("/admin/categories/create", function(){
+
+    User::verifyLogin();
 
     $category = new Category();
 
@@ -274,6 +280,8 @@ $app->post("/admin/categories/create", function(){
 ################## ROTA DELETE CATEGORIAS ########################
 $app->get("/admin/categories/:idcategory/delete", function($idcategory){
 
+    User::verifyLogin();
+
     $category = new Category(); //Nova instancia de classe
 
     $category->get((int)$idcategory); //Carrega objeto verificando se ainda existe no banco de dados
@@ -285,5 +293,38 @@ $app->get("/admin/categories/:idcategory/delete", function($idcategory){
     exit();
 
 });
+################## ROTA EDITAR CATEGORIAS ########################
+$app->get("/admin/categories/:idcategory", function($idcategory){
 
+    User::verifyLogin();
+
+    $category = new Category();
+
+    $category->get((int)$idcategory);
+
+    $page = new PageAdmin();
+
+    $page->setTpl("categories-update", [
+        "category" => $category->getValues()
+    ]);
+
+});
+################## ROTA EDITAR/SAVE CATEGORIAS ########################
+$app->post("/admin/categories/:idcategory", function($idcategory){
+
+    User::verifyLogin();
+
+    $category = new Category();
+
+    $category->get((int)$idcategory);
+
+    $category->setData($_POST);
+
+    $category->save();
+
+    header("Location: /admin/categories");
+
+    exit;
+
+});
 $app->run();
